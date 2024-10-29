@@ -1,0 +1,19 @@
+{
+  "name": "recipebook-nodejsonly-apis",
+  "version": "1.0.0",
+  "description": "with only nodejs or mongodb no expressjs",
+  "main": "server.mjs",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.mjs"
+  },
+  "author": "Avesh Dabhoiwala",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "mongodb": "^6.10.0"
+  }
+}
