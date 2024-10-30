@@ -6,15 +6,25 @@ const authenticateKey = (req, res, next) => {
     const apiKey = req.headers['x-api-key'] || url.searchParams.get('apikey');
     //console.log(apiKey)
 
+    console.log(req.method);
+
     if (!apiKey) {
         res.writeHead(401, { 'Content-Type': 'application/json' });
         return res.end(JSON.stringify({ message: 'API key is missing' }));
     }
 
-    if (apiKey !== process.env.API_KEY) {
-        res.writeHead(403, { 'Content-Type': 'application/json' });
-        return res.end(JSON.stringify({ message: 'Invalid API key' }));
+    if (req.method === "GET") {
+        if (apiKey !== process.env.GET_API_KEY) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: 'Invalid API key' }));
+        }
+    } else if (req.method === "POST") {
+        if (apiKey !== process.env.POST_API_KEY) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: 'Invalid API key' }));
+        }
     }
+
 
     next();
 };
