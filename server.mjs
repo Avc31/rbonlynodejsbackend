@@ -12,36 +12,18 @@ const db = await connectToDatabase();
 
 const server = http.createServer(async (req, res) => {
 
-  authenticateKey(req, res, () => {
-    if (req.method === "GET") {
-      getReq(req, res, db);
-    } else if (req.method === "POST") {
-      postReq(req, res, db);
-    } else if (req.method === "PUT") {
-      putReq(req, res, db);
-    } else if (req.method === "DELETE") {
-      deleteReq(req, res, db);
-    } else {
-      res.writeHead(404, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ message: "Route not found" }));
-    }
-  });
-
-  // if (req.method == "GET") {
-  //   getReq(req, res, db);
-  // } else if (req.method == "POST") {
-  //   postReq(req, res, db);
-  // } else if (req.method == "PUT") {
-  //   putReq(req, res, db);
-  // } else if (req.method == "DELETE") {
-  //   deleteReq(req, res, db);
-  // } else {
-  //   res.writeHead(200, { 'Content-Type': 'application/json' });
-  //   res.end(JSON.stringify({
-  //     title: "not found", message: 'route not found',
-  //   }));
-  // }
-
+  if (req.method === "GET") {
+    getReq(req, res, db);
+  } else if (req.method === "POST") {
+    postReq(req, res, db);
+  } else if (req.method === "PUT") {
+    putReq(req, res, db);
+  } else if (req.method === "DELETE") {
+    deleteReq(req, res, db);
+  } else {
+    res.writeHead(404, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ message: "Route not found" }));
+  }
 
 });
 
