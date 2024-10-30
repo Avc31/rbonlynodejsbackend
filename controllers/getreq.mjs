@@ -6,7 +6,7 @@ const getReq = async (req, res, db) => {
   authenticateKey(req, res, async () => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const id = url.pathname.split('/').pop();
-
+    console.log(id)
     const apiKey = req.headers['x-api-key'] || url.searchParams.get("apikey");
 
     if (url.pathname === "/api/recipes" && apiKey) {

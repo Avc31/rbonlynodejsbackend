@@ -1,37 +1,43 @@
 import { ObjectId } from 'mongodb';
+import authenticateKey from '../middleware/authenticatekey.mjs';
 
 const deleteReq = async (req, res, db) => {
-    const urlParts = req.url.split('/');
-    const collectionType = urlParts[urlParts.length - 2];
-    const id = urlParts[urlParts.length - 1];
 
-    try {
-        let result;
+    authenticateKey(req, res, async () => {
 
-        if (collectionType === "recipes") {
-            const collection = db.collection("recipes");
-            result = await collection.deleteOne({ _id: new ObjectId(id) });
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        const id = url.pathname.split('/').pop();
+        const apiKey = req.headers['x-api-key'] || url.searchParams.get("apikey");
 
-        } else if (collectionType === "users") {
-            const collection = db.collection("users");
-            result = await collection.deleteOne({ _id: new ObjectId(id) });
+        try {
+            let result;
 
-        } else {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            return res.end(JSON.stringify({ message: "Invalid route" }));
+            if (url.pathname === `/api/recipes/${id}` && apiKey) {
+                const collection = db.collection("recipes");
+                result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+            } else if (url.pathname === `/api/users/${id}` && apiKey) {
+                const collection = db.collection("users");
+                result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+            } else {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                return res.end(JSON.stringify({ message: "Invalid route" }));
+            }
+
+            if (result.deletedCount === 0) {
+                res.writeHead(404, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: `${url.pathname.slice(11, -1)} not found` }));
+            } else {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: `${url.pathname.slice(11, -1)} deleted successfully` }));
+            }
+        } catch (error) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: "Error processing request", error: error.message }));
         }
+    })
 
-        if (result.deletedCount === 0) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: `${collectionType.slice(0, -1)} not found` }));
-        } else {
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: `${collectionType.slice(0, -1)} deleted successfully` }));
-        }
-    } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Error processing request", error: error.message }));
-    }
 };
 
 export default deleteReq;

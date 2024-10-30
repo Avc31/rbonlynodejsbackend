@@ -23,6 +23,16 @@ const authenticateKey = (req, res, next) => {
             res.writeHead(403, { 'Content-Type': 'application/json' });
             return res.end(JSON.stringify({ message: 'Invalid API key' }));
         }
+    } else if (req.method === "PUT") {
+        if (apiKey !== process.env.PUT_API_KEY) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: 'Invalid API key' }));
+        }
+    } else if (req.method === "DELETE") {
+        if (apiKey !== process.env.DELETE_API_KEY) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            return res.end(JSON.stringify({ message: 'Invalid API key' }));
+        }
     }
 
 
