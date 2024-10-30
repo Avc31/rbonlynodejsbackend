@@ -1,9 +1,6 @@
 import { ObjectId } from 'mongodb';
-import connectToDatabase from '../connectdb.mjs';
 
-const db = await connectToDatabase();
-
-const getReq = async (req, res) => {
+const getReq = async (req, res, db) => {
 
     const urlParts = req.url.split('/');
     const collectionType = urlParts[urlParts.length - 2];
